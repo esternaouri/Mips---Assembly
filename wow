@@ -1,0 +1,20 @@
+wow:
+
+li $v1,0 #assume not palindrome 
+andi $t1,$a1,0xff#mask the lowest byte (0-7) 
+srl  $t2,$a1,24 #shift byte 24-31 to 0-7 
+bne  $t1,$t2,not_palindrome #compare the high and low byte
+srl  $t1,$a1,8 andi  $t1,$t1,0xff 
+sll  $t2,$a1,8 srl  $t2,$t2,24 
+bne  $t1,$t2,not_palindrome #compare byte 8-15 and 16-23 
+li $v1,1 #palindrome it is not_palindrome:
+li $t0,16 #the number of shifts 
+li $v0,1 #print num
+
+print_base_4:
+rol $a1,$a1,2 #rotate left by 2 bits after 16 times$a1 return to the same value 
+andi $a0,$a1,3 
+syscall 
+addi $t0,$t0,-1 
+bne $t0,$0,print_base_4 
+jr $ra   
