@@ -1,0 +1,40 @@
+
+#In this code we are changing each  2 bytes into x and prininting the strings . 
+
+.data
+str:  .asciiz "During two hours of tests late last week"
+str1:      .space 100 
+.text 
+.globl main
+main:  
+#print the string before the change
+li $v0,4  
+la $a0,str 
+syscall
+la $t0,str #str pointer
+li $t1,'x' #the ASCII to change  
+la $t3,str1
+lb $t2,0($t0) 
+put_x: 
+sb $t2,0($t3) #backup  from srt to str1
+sb $t1,0($t0) #write x on str 
+addi $t0,$t0,2 #next arg
+addi $t3,$t3,1  
+lb $t2,0($t0)
+bnez $t2, put_x    #new line
+li $v0,11  
+li $a0,'\n'  
+syscall   
+#print the string after the change 
+li $v0,4 
+la $a0,str  
+syscall  #new line
+li $v0,11 
+li $a0,'\n' 
+syscall    #print the string after the change 
+ li $v0,4
+ la $a0,str1  
+ syscall
+ #exit 
+ li $v0,10 
+ syscall 
