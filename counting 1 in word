@@ -1,0 +1,46 @@
+# the program counts the number of ones in every word and saves 
+# in Bits the max count
+# Program uses a procedure CountOnes that gets a word as parameter
+# and returns the number of ones in the parameter 
+# register 
+#  s0 - points to next word in x array 
+#  s1 - saves the current max num of bits
+############################################### 
+ 
+ .data  x:  .word 0x00000001, 0xffffffff, 0x00000007, 0x0000ffff, 0x20430066,0  
+ bits: .word  0 
+ 
+ .text 
+ main:  la $s0, x 
+ li $s1, 0  
+ processNextWord: 
+ lw $a0, 0($s0)
+ beq $a0, $zero, endOfProgram   
+ jal CountOnes 
+ slt $t0, $s1, $v0  
+ beq $t0, $zero, noNewMax 
+ move $s1, $v0 noNewMax:  
+ 
+ addiu $s0, $s0, 4 
+ lb processNextWord
+ endOfProgram:    
+ la $t0, bits
+ sw $s1, 0($t0)
+ li $v0,10 
+ syscall 
+ ################################################# #  CountOnes # #################################################  
+ 
+CountOnes:  li $t8, 1 
+li $v0, 0
+andLoop: 
+ and $t9, $a0, $t8 
+ beq $t9, $zero, zeroBitFound 
+ addi $v0, $v0, 1 
+ zeroBitFound:  
+ 
+ sll $t8, $t8, 1
+ beq $t8, $zero, endOfCountOnes 
+ b andLoop
+ endOfCountOnes:  
+ jr $ra 
+ 
